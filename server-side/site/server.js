@@ -6,9 +6,56 @@ var express = require('express'),
 	//upload = require('./routes/upload.js'),
 	create = require('./routes/create.js'),
 	study = require('./routes/study.js'),
-	admin = require('./routes/admin.js');
+	admin = require('./routes/admin.js'),
+        os = require('os');
+	//toobusy = require('toobusy').maxLag(5);
 
 var app = express();
+
+// stress --cpu 10 --timeout 50
+function cpuTicksAcrossCores()
+{
+  //Initialise sum of idle and time of cores and fetch CPU info
+  var totalIdle = 0, totalTick = 0;
+  var cpus = os.cpus();
+
+  //Loop through CPU cores
+  for(var i = 0, len = cpus.length; i < len; i++)
+  {
+                //Select CPU core
+                var cpu = cpus[i];
+                //Total up the time in the cores tick
+                for(type in cpu.times)
+                {
+                        totalTick += cpu.times[type];
+                }
+                //Total up the idle time of the core
+                totalIdle += cpu.times.idle;
+  }
+
+  //Return the average Idle and Tick times
+
+var startMeasure = cpuTicksAcrossCores();
+
+function cpuAverage()
+{
+        var endMeasure = cpuTicksAcrossCores();
+
+        //Calculate the difference in idle and total time between the measures
+        var idleDifference = endMeasure.idle - startMeasure.idle;
+        var totalDifference = endMeasure.total - startMeasure.total;
+
+        //Calculate the average percentage CPU usage
+        var average = (((totalDifference-idleDifference)/totalDifference)*100).toFixed(2);
+        console.log('cpu :',average);
+        return average;
+}
+
+app.use(function(req, res, next) {
+  if (cpuAverage()>30) res.send(503, "I'm busy right now, sorry.");
+  else next();
+});
+
 
 app.configure(function () {
     app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
