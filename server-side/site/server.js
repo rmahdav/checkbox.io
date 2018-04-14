@@ -32,7 +32,7 @@ function cpuTicksAcrossCores()
                 //Total up the idle time of the core
                 totalIdle += cpu.times.idle;
   }
-
+}
   //Return the average Idle and Tick times
 
 var startMeasure = cpuTicksAcrossCores();
