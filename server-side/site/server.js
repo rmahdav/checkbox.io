@@ -52,7 +52,7 @@ function cpuAverage()
 }
 
 app.use(function(req, res, next) {
-  if (cpuAverage()>30) res.send(503, "I'm busy right now, sorry.");
+  if (cpuAverage()>20) res.send(500, "CPU is overloaded");
   else next();
 });
 
