@@ -12,7 +12,7 @@ var express = require('express'),
 
 var app = express();
 
-// stress --cpu 10 --timeout 50
+// stress --cpu 15 --timeout 60
 function cpuTicksAcrossCores()
 {
   //Initialise sum of idle and time of cores and fetch CPU info
